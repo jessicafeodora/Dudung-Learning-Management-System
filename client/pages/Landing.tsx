@@ -21,7 +21,7 @@ interface Announcement {
 const announcements: Announcement[] = [
   {
     id: "1",
-    title: "[NEW] Welcome to Dudung SmartEdu beta for students",
+    title: "Welcome to Dudung SmartEdu beta for students",
     author: "Admin - Academic Information Center",
     date: "15 Mar 2025",
     time: "09:10",
@@ -31,7 +31,7 @@ const announcements: Announcement[] = [
   },
   {
     id: "2",
-    title: "[IMPORTANT] Midterm exam schedule & online proctoring",
+    title: "Midterm exam schedule & online proctoring",
     author: "IT Support - IST Jurusan",
     date: "14 Mar 2025",
     time: "16:30",
@@ -65,9 +65,17 @@ function trimWords(text: string, maxWords: number) {
   return `${words.slice(0, maxWords).join(" ")}…`;
 }
 
+type Role = "Student" | "Teacher";
+
+const LAST_ROLE_KEY = "dudung:last_role";
+
 export function Landing() {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
 
   // Announcements UX
   const [showAllAnnouncements, setShowAllAnnouncements] = useState(false);
@@ -76,13 +84,13 @@ export function Landing() {
   );
 
   const [loginData, setLoginData] = useState({
-    role: "Student" as "Student" | "Teacher",
+    role: "Student" as Role,
     email: "",
     password: "",
   });
 
   const [registerData, setRegisterData] = useState({
-    role: "Student",
+    role: "Student" as Role,
     fullname: "",
     npmNpwp: "",
     email: "",
@@ -130,7 +138,7 @@ export function Landing() {
     if (name === "role") {
       setRegisterData((prev) => ({
         ...prev,
-        role: value as "Student" | "Teacher",
+        role: value as Role,
         npmNpwp: "",
         email: "",
       }));
@@ -187,15 +195,6 @@ export function Landing() {
     return Object.keys(errors).length === 0;
   };
 
-
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    if (user) navigate("/dashboard", { replace: true });
-  }, [user, navigate]);
-
   const pendingKey = (email: string) => `pending_profile:${email.toLowerCase()}`;
 
   const ensureProfile = async (userId: string, email: string) => {
@@ -216,6 +215,7 @@ export function Landing() {
       id: userId,
       email,
       full_name: pending.full_name ?? pending.fullname ?? null,
+      // NOTE: existing schema stores NPM/NPWP under `npm`
       npm: pending.npm ?? pending.npmNpwp ?? null,
       avatar_url: null,
     };
@@ -227,6 +227,24 @@ export function Landing() {
     }
     console.warn("Profile insert failed:", insertErr);
   };
+
+  const redirectByRole = (role: Role) => {
+    localStorage.setItem(LAST_ROLE_KEY, role);
+    navigate(role === "Teacher" ? "/in-development" : "/dashboard", {
+      replace: true,
+    });
+  };
+
+  // If user already has a session (reload/back), send them to the right place.
+  // We use the last selected role to avoid relying on profile schema changes.
+  useEffect(() => {
+    if (!user) return;
+
+    const lastRole = (localStorage.getItem(LAST_ROLE_KEY) as Role | null) ?? "Student";
+    navigate(lastRole === "Teacher" ? "/in-development" : "/dashboard", {
+      replace: true,
+    });
+  }, [user, navigate]);
 
   const handleRegisterSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -255,10 +273,14 @@ export function Landing() {
       const newUser = data.user;
       const session = data.session;
 
+      // If Supabase returns a session immediately, we can redirect right away
       if (newUser && session) {
         await ensureProfile(newUser.id, registerData.email);
-        toast({ title: "Registration successful", description: "Welcome! Redirecting…" });
-        navigate("/dashboard");
+        toast({
+          title: "Registration successful",
+          description: "Welcome! Redirecting…",
+        });
+        redirectByRole(registerData.role);
         return;
       }
 
@@ -291,8 +313,8 @@ export function Landing() {
         await ensureProfile(authedUser.id, authedUser.email);
       }
 
-      toast({ title: "Signed in", description: "Redirecting to dashboard…" });
-      navigate("/dashboard");
+      toast({ title: "Signed in", description: "Redirecting…" });
+      redirectByRole(loginData.role);
     } catch (err: any) {
       toast({
         title: "Sign in failed",
@@ -303,7 +325,7 @@ export function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24 overflow-x-hidden">
       {/* Hero Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto">
@@ -323,15 +345,11 @@ export function Landing() {
                   ?.scrollIntoView({ behavior: "smooth", block: "start" })
               }
               className="mt-6 text-primary hover:text-primary/80 font-medium smooth-transition"
-            >
-            </button>
+            ></button>
           </div>
 
           {/* Main Content - Tablet 60/40, Mobile: form first */}
-          <div
-            id="landing-main"
-            className="grid grid-cols-1 md:grid-cols-12 gap-8"
-          >
+          <div id="landing-main" className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {/* Auth Form (40%) */}
             <div className="md:col-span-5 order-1 md:order-2">
               <div className="glassmorphism p-8 md:sticky md:top-24">
@@ -353,14 +371,14 @@ export function Landing() {
                         Sign in as
                       </label>
                       <div className="flex gap-2 flex-1">
-                        {["Student", "Teacher"].map((role) => (
+                        {(["Student", "Teacher"] as Role[]).map((role) => (
                           <button
                             key={role}
                             type="button"
                             onClick={() =>
                               setLoginData((prev) => ({
                                 ...prev,
-                                role: role as "Student" | "Teacher",
+                                role,
                               }))
                             }
                             className={cn(
@@ -386,7 +404,11 @@ export function Landing() {
                         name="email"
                         value={loginData.email}
                         onChange={handleLoginChange}
-                        placeholder="name@student.dudung.ac.id"
+                        placeholder={
+                          loginData.role === "Student"
+                            ? "name@student.dudung.ac.id"
+                            : "name@staff.dudung.ac.id"
+                        }
                         className={cn(
                           "w-full px-4 py-3 rounded-lg border",
                           "bg-white/50 dark:bg-white/10",
@@ -419,14 +441,10 @@ export function Landing() {
                         />
                         <button
                           type="button"
-                          onClick={() => setShowPassword(!showPassword)}
+                          onClick={() => setShowPassword((v) => !v)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground smooth-transition"
-                        >
-                          {showPassword ? (
-                            <EyeOff className="w-4 h-4" />
-                          ) : (
-                            <Eye className="w-4 h-4" />
-                          )}
+                          aria-label={showPassword ? "Hide password" : "Show password"}
+                        >                          
                         </button>
                       </div>
                     </div>
@@ -464,14 +482,14 @@ export function Landing() {
                         Register as
                       </label>
                       <div className="flex gap-2 flex-1">
-                        {["Student", "Teacher"].map((role) => (
+                        {(["Student", "Teacher"] as Role[]).map((role) => (
                           <button
                             key={role}
                             type="button"
                             onClick={() =>
                               setRegisterData((prev) => ({
                                 ...prev,
-                                role: role as "Student" | "Teacher",
+                                role,
                                 npmNpwp: "",
                               }))
                             }
@@ -638,8 +656,9 @@ export function Landing() {
                         />
                         <button
                           type="button"
-                          onClick={() => setShowPassword(!showPassword)}
+                          onClick={() => setShowPassword((v) => !v)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground smooth-transition"
+                          aria-label={showPassword ? "Hide password" : "Show password"}
                         >
                           {showPassword ? (
                             <EyeOff className="w-4 h-4" />

@@ -11,6 +11,7 @@ const allResults = [
     id: "1",
     title: "Introduction to Data Science",
     description: "Learn the fundamentals of data science and analytics",
+    imageUrl: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=60",
     type: "Course" as const,
     instructor: "Dr. Rahma",
     lastUpdated: "5 Jan 2025",
@@ -20,6 +21,7 @@ const allResults = [
     id: "2",
     title: "UXUX Design Workshop: From Zero to Prototype",
     description: "Create your first prototype in just 3 hours",
+    imageUrl: "https://images.unsplash.com/photo-1559028012-481c04fa702d?auto=format&fit=crop&w=1200&q=60",
     type: "Workshop" as const,
     instructor: "Design Center",
     lastUpdated: "10 Jan 2025",
@@ -29,6 +31,7 @@ const allResults = [
     id: "3",
     title: "Fundamentals of Cloud Computing",
     description: "Master cloud infrastructure and deployment",
+    imageUrl: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=60",
     type: "Certificate" as const,
     instructor: "Dr. Andi Pratama",
     lastUpdated: "15 Jan 2025",
@@ -38,6 +41,7 @@ const allResults = [
     id: "4",
     title: "Web Programming Essentials",
     description: "Build modern web applications with HTML, CSS, and JavaScript",
+    imageUrl: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=60",
     type: "Course" as const,
     instructor: "Budi Santoso",
     lastUpdated: "8 Jan 2025",
@@ -47,6 +51,7 @@ const allResults = [
     id: "5",
     title: "Public Speaking Masterclass",
     description: "Develop confident public speaking skills",
+    imageUrl: "https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&w=1200&q=60",
     type: "Workshop" as const,
     instructor: "Career Center",
     lastUpdated: "12 Jan 2025",
@@ -56,6 +61,7 @@ const allResults = [
     id: "6",
     title: "Academic Writing Essentials",
     description: "Perfect your academic writing techniques",
+    imageUrl: "https://images.unsplash.com/photo-1537495329792-41ae41ad3bf0?auto=format&fit=crop&w=1200&q=60",
     type: "Certificate" as const,
     instructor: "Dr. Ahmed Said",
     lastUpdated: "18 Jan 2025",
@@ -65,6 +71,7 @@ const allResults = [
     id: "7",
     title: "Python for Data Analysis",
     description: "Advanced Python programming for data professionals",
+    imageUrl: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=1200&q=60",  
     type: "Course" as const,
     instructor: "Mike Johnson",
     lastUpdated: "11 Jan 2025",
@@ -74,6 +81,7 @@ const allResults = [
     id: "8",
     title: "Soft Skills Bootcamp: Communication at Work",
     description: "Enhance your workplace communication abilities",
+    imageUrl: "https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=1200&q=60",
     type: "Workshop" as const,
     instructor: "Career Center",
     lastUpdated: "14 Jan 2025",
@@ -83,6 +91,7 @@ const allResults = [
     id: "9",
     title: "Cybersecurity Basics",
     description: "Understand the fundamentals of cybersecurity",
+    imageUrl: "https://plus.unsplash.com/premium_photo-1674506654010-22677db35bdf?auto=format&fit=crop&w=1200&q=60",
     type: "Certificate" as const,
     instructor: "Prof. Lisa Anderson",
     lastUpdated: "20 Jan 2025",
@@ -208,7 +217,7 @@ export function Search() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-24 overflow-x-hidden">
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
         <h1 className="text-3xl font-bold text-foreground mb-2">Search</h1>

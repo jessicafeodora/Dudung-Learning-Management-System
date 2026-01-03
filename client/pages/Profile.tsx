@@ -5,6 +5,8 @@ import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Download, Share2, Eye, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
+import { SIGN_OUT_SCOPES } from "@supabase/supabase-js";
 
 const sampleCompletedWorkshops = Array.from({ length: 6 }, (_, i) => ({
   id: `workshop-${i + 1}`,
@@ -36,6 +38,8 @@ const sampleCertificates = Array.from({ length: 6 }, (_, i) => ({
 }));
 
 export function Profile() {
+  const navigate = useNavigate();
+  const { profile, updateProfile, signOut } = useAuth();
   const { user } = useAuth();
   const { toast } = useToast();
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -55,6 +59,16 @@ export function Profile() {
   useEffect(() => {
     const loadProfile = async () => {
       if (!user) return;
+
+      // Fast-path: hydrate UI from auth context profile while Supabase fetch runs.
+      if (Profile) {
+        setFormData((prev) => ({
+          ...prev,
+          name: (profile.full_name ?? prev.name ?? "").toString(),
+          npm: (profile.npm ?? prev.npm ?? "").toString(),
+          email: (profile.email ?? user.email ?? "").toString(),
+        }));
+      }
 
       setLoadingProfile(true);
       try {
@@ -100,7 +114,7 @@ export function Profile() {
     };
 
     loadProfile();
-  }, [user, toast]);
+  }, [user, Profile, toast]);
 
   // Institutional email rule (spec): if email is the default student domain,
   // treat it as read-only.
@@ -130,16 +144,10 @@ export function Profile() {
     if (!user) return;
 
     try {
-      const updates = {
-        id: user.id,
-        // Name & NPM stay read-only in UI, but we keep them in sync if present.
+      await updateProfile({
         full_name: formData.name || null,
         npm: formData.npm || null,
-        // Only allow editing non-institutional email in UI, but email changes should be handled by Supabase auth.
-      };
-
-      const { error } = await supabase.from("profiles").upsert(updates, { onConflict: "id" });
-      if (error) throw error;
+      });
 
       setIsEditing(false);
       toast({ title: "Profile updated", description: "Your changes have been saved." });
@@ -153,7 +161,7 @@ export function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24 overflow-x-hidden">
       <div className="container mx-auto px-4 py-12">
         {loadingProfile && (
           <div className="mb-6 glassmorphism px-4 py-3 text-sm text-muted-foreground">
@@ -192,7 +200,7 @@ export function Profile() {
                   type="text"
                   name="name"
                   value={formData.name}
-                  disabled
+                  disabled={!isEditing}
                   className={cn(
                     "w-full px-4 py-2 rounded-lg border",
                     "bg-white/30 dark:bg-white/5",
@@ -607,14 +615,16 @@ export function Profile() {
 
         {/* Logout Button */}
         <div className="flex justify-center mb-12">
-          <button className="px-12 py-3 rounded-2xl bg-destructive text-destructive-foreground font-medium smooth-transition hover:bg-destructive/90">
+          <button
+            onClick={async () => {
+              await signOut();
+              navigate("/");
+            }}
+            className="px-12 py-3 rounded-2xl bg-destructive text-destructive-foreground font-medium smooth-transition hover:bg-destructive/90">
             Logout
           </button>
         </div>
       </div>
-
-      {/* Add padding for mobile to account for bottom nav */}
-      <div className="h-24 md:hidden" />
     </div>
   );
 }

@@ -91,7 +91,7 @@ export function CourseDetail() {
   const currentLesson = sampleLessons[currentLessonNumber - 1];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24 overflow-x-hidden">
       <div className="container mx-auto px-4 py-8">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-8">

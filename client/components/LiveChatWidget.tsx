@@ -140,14 +140,14 @@ export function LiveChatWidget({
       {isOpen && (
         <div
           className={cn(
-            "fixed w-80 max-h-[500px]",
+            "fixed w-[18rem] sm:w-80 max-h-[70vh]",
             panelBottomClass,
             sideClass,
             "glass-card shadow-xl overflow-y-auto z-40",
             "animate-scale-in rounded-2xl"
           )}
         >
-          <div className="p-6 space-y-4">
+          <div className="p-4 sm:p-6 space-y-4">
             <h3 className="text-lg font-bold text-foreground">
               SmartEdu Live Chat
             </h3>

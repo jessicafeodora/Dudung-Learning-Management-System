@@ -35,7 +35,7 @@ const sampleCourses = Array.from({ length: 6 }, (_, i) => ({
     "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=600&q=80",
     "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80",
     "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=600&q=80",
-    "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?auto=format&fit=crop&w=600&q=80",
+    "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?auto=format&fit=crop&w=600&q=80",
   ][i],
 }));
 
@@ -53,7 +53,7 @@ export default function CoursesPage() {
   };
 
   return (
-    <div className="min-h-screen px-4 py-6 md:px-10">
+    <div className="min-h-screen px-4 py-6 md:px-10 pb-24 overflow-x-hidden">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>

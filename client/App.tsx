@@ -18,6 +18,8 @@ import Courses from "./pages/Courses";
 import { Search } from "./pages/Search";
 import { Profile } from "./pages/Profile";
 import { CourseDetail } from "./pages/CourseDetail";
+import { Lesson } from "./pages/Lesson";
+import { InDevelopment } from "./pages/InDevelopment";
 import WorkshopCertification from "./pages/WorkshopCertification";
 
 import { AuthProvider, useAuth } from "./lib/auth";
@@ -62,7 +64,7 @@ function AppLayout() {
   // Position rules per spec:
   // - Landing: bottom-right
   // - Dashboard: bottom-left
-  const liveChatPosition = pathname === "/dashboard" ? "bottom-left" : "bottom-right";
+  const liveChatPosition = "bottom-right";
 
   // Landing has no bottom-nav, so we can anchor closer to the screen edge.
   const chatButtonBottom = isLandingPage ? "bottom-6" : "bottom-28";
@@ -112,11 +114,23 @@ function AppLayout() {
             }
           />
 
+          <Route path="/profile" element={<Profile />} />
+
+
           <Route
-            path="/profile"
+            path="/lesson/:slug"
             element={
               <RequireAuth>
-                <Profile />
+                <Lesson />
+              </RequireAuth>
+            }
+          />
+
+          <Route
+            path="/in-development"
+            element={
+              <RequireAuth>
+                <InDevelopment />
               </RequireAuth>
             }
           />

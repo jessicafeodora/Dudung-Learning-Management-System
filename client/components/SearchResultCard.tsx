@@ -111,7 +111,7 @@ export function SearchResultCard({
         </div>
 
         {/* Title */}
-        <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary smooth-transition">
+        <h3 className="text-base font-bold text-foreground mb-2 break-words group-hover:text-primary smooth-transition">
           {title}
         </h3>
 

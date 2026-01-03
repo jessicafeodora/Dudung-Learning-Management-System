@@ -1,16 +1,12 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ContinueLearningCard } from "@/components/ContinueLearningCard";
 import { CourseOverviewCard } from "@/components/CourseOverviewCard";
 import { WorkshopCard } from "@/components/WorkshopCard";
 import { TodoTask } from "@/components/TodoTask";
 import { CalendarWidget } from "@/components/CalendarWidget";
 import { cn } from "@/lib/utils";
-
-const sampleUser = {
-  name: "Alex Student",
-  profileImage: "https://via.placeholder.com/64",
-};
+import { useAuth } from "@/lib/auth";
 
 const sampleContinueLearning = {
   id: "1",
@@ -19,15 +15,18 @@ const sampleContinueLearning = {
   lessonNumber: 8,
   totalLessons: 12,
   progress: 64,
+  slug: "data-structures-algorithms",
+  imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=60",
 };
 
 const sampleRecentlyAccessed = [
   {
     id: "1",
-    title: "UXUX Fundamentals",
+    title: "UI/UX Fundamentals",
     instructor: "John Doe",
     progress: 45,
     lastAccessed: "Yesterday",
+    imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "2",
@@ -35,6 +34,7 @@ const sampleRecentlyAccessed = [
     instructor: "Jane Smith",
     progress: 60,
     lastAccessed: "2 days ago",
+    imageUrl: "https://images.unsplash.com/photo-1526378722484-bd91ca387e72?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "3",
@@ -42,6 +42,7 @@ const sampleRecentlyAccessed = [
     instructor: "Mike Johnson",
     progress: 75,
     lastAccessed: "Last week",
+    imageUrl: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "4",
@@ -49,16 +50,18 @@ const sampleRecentlyAccessed = [
     instructor: "Sarah Lee",
     progress: 30,
     lastAccessed: "3 days ago",
+    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=60",
   },
 ];
 
-const sampleCourses = [
+const courses: DashboardCourse[] = [
   {
     id: "1",
     title: "Usage Analytics I",
     instructor: "DR. Rahma",
     progress: 50,
     lastAccessed: "Sun, 17 Jan",
+    imageUrl: "https://images.unsplash.com/photo-1666875753105-c63a6f3bdc86?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "2",
@@ -66,6 +69,7 @@ const sampleCourses = [
     instructor: "Budi Santoso",
     progress: 75,
     lastAccessed: "Mon, 18 Jan",
+    imageUrl: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "3",
@@ -73,6 +77,7 @@ const sampleCourses = [
     instructor: "Andi Pratama",
     progress: 40,
     lastAccessed: "Tue, 19 Jan",
+    imageUrl: "https://images.unsplash.com/photo-1674027444485-cec3da58eef4?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "4",
@@ -80,6 +85,7 @@ const sampleCourses = [
     instructor: "Lina Patel",
     progress: 60,
     lastAccessed: "Sun, 17 Jan",
+    imageUrl: "https://plus.unsplash.com/premium_photo-1681487942927-e1a2786e6036?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "5",
@@ -87,6 +93,7 @@ const sampleCourses = [
     instructor: "Ahmad Hassan",
     progress: 35,
     lastAccessed: "Wed, 20 Jan",
+    imageUrl: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "6",
@@ -94,6 +101,7 @@ const sampleCourses = [
     instructor: "Emma Wilson",
     progress: 45,
     lastAccessed: "Fri, 22 Jan",
+    imageUrl: "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "7",
@@ -101,6 +109,7 @@ const sampleCourses = [
     instructor: "David Kim",
     progress: 25,
     lastAccessed: "Thu, 21 Jan",
+    imageUrl: "https://images.unsplash.com/photo-1511376777868-611b54f68947?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "8",
@@ -108,6 +117,7 @@ const sampleCourses = [
     instructor: "Lisa Anderson",
     progress: 55,
     lastAccessed: "Sat, 23 Jan",
+    imageUrl: "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=1200&q=60",
   },
 ];
 
@@ -144,6 +154,7 @@ const sampleWorkshops: Array<{
   date: string;
   duration: string;
   labels: WorkshopLabel[];
+  imageUrl?: string;
 }> = [
   {
     id: "1",
@@ -152,6 +163,7 @@ const sampleWorkshops: Array<{
     date: "20 Jan • 10:00-12:00",
     duration: "",
     labels: ["FREE", "RECOMMENDED"],
+    imageUrl: "https://plus.unsplash.com/premium_photo-1661693857534-e3f85a4b06aa?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "2",
@@ -160,6 +172,7 @@ const sampleWorkshops: Array<{
     date: "25 Jan • 08:00-16:00",
     duration: "",
     labels: ["EXCLUSIVE"],
+    imageUrl: "https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1200&q=60",
   },
   {
     id: "3",
@@ -168,6 +181,7 @@ const sampleWorkshops: Array<{
     date: "26 Jan • 09:00-17:00",
     duration: "",
     labels: ["RECOMMENDED"],
+    imageUrl: "https://images.unsplash.com/photo-1528901166007-3784c7dd3653?auto=format&fit=crop&w=1200&q=60",  
   },
 ];
 
@@ -195,13 +209,26 @@ const sampleCalendarEvents = [
   },
 ];
 
+type DashboardCourse = {
+  id: string
+  title: string
+  instructor: string
+  progress: number
+  lastAccessed: string
+  imageUrl?: string
+  isPlaceholder?: boolean
+}
+
 export function Dashboard() {
+  const navigate = useNavigate();
+  const { profile } = useAuth();
+
   const [openMenuCourse, setOpenMenuCourse] = useState<string | null>(null);
 
   // Keep Courses Overview layout stable by filling empty slots (up to 12).
   const coursesOverviewItems = useMemo(() => {
     const max = 12;
-    const real = sampleCourses.slice(0, max);
+    const real = courses.slice(0, max);
     const placeholders = Array.from({ length: Math.max(0, max - real.length) }).map(
       (_, i) => ({
         id: `placeholder-${i + 1}`,
@@ -216,7 +243,12 @@ export function Dashboard() {
   }, []);
 
   const handleCourseAction = (action: string, courseId: string) => {
-    console.log(`Course action: ${action} for course ${courseId}`);
+    if (action === "details") {
+      navigate(`/course/${courseId}`);
+      return;
+    }
+    // continue
+    navigate(courseHref(courseId));
   };
 
   const handleWorkshopAction = (action: string, workshopId: string) => {
@@ -227,8 +259,21 @@ export function Dashboard() {
     console.log(`Todo clicked: ${taskId}`);
   };
 
+  const courseHref = (courseId: string) => {
+    const map: Record<string, string> = {
+      "1": "/lesson/usage-analytics",
+      "2": "/lesson/web-programming",
+      "3": "/lesson/data-structures-algorithms",
+    };
+    return map[courseId] ?? "/in-development";
+  };
+
+  const workshopHref = (workshopId: string) => "/workshops";
+
+  const { slug: continueHref, ...continueProps } = sampleContinueLearning;
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24 overflow-x-hidden">
       <div className="container mx-auto px-4 py-12">
         {/* Profile Section */}
         <div className="mb-12 flex items-center gap-6">
@@ -250,14 +295,14 @@ export function Dashboard() {
               )}
               role="tooltip"
             >
-              <div className="glassmorphism-light px-3 py-1.5 rounded-xl text-xs font-medium text-foreground shadow-lg">
+              <div className="glassmorphism-light px-3 py-1.5 rounded-xl text-xs font-medium text-foreground shadow-lg whitespace-nowrap">
                 Manage Profile
               </div>
             </div>
           </Link>
           <div>
             <h1 className="text-3xl font-bold text-foreground">
-              Hello, {sampleUser.name}
+              Hello, {profile?.full_name ?? profile?.email ?? "Student"}
             </h1>
             <p className="text-lg text-muted-foreground">
               Let's continue learning
@@ -274,7 +319,9 @@ export function Dashboard() {
               <h2 className="text-2xl font-bold text-foreground mb-6">
                 Continue Learning
               </h2>
-              <ContinueLearningCard {...sampleContinueLearning} />
+              <Link to={continueHref} className="block">
+                <ContinueLearningCard {...continueProps} />
+              </Link>
             </section>
 
             {/* Recently Accessed */}
@@ -315,13 +362,23 @@ export function Dashboard() {
                 </button>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {coursesOverviewItems.map((course) => (
-                  <CourseOverviewCard
-                    key={course.id}
-                    {...course}
-                    onAction={handleCourseAction}
-                  />
-                ))}
+                {coursesOverviewItems.map((course) => {
+                  const href = course.isPlaceholder ? "/in-development" : courseHref(course.id);
+                  const card = (
+                    <CourseOverviewCard
+                      key={course.id}
+                      {...course}
+                      onAction={handleCourseAction}
+                    />
+                  );
+                  return course.isPlaceholder ? (
+                    <div key={course.id}>{card}</div>
+                  ) : (
+                    <Link key={course.id} to={href} className="block">
+                      {card}
+                    </Link>
+                  );
+                })}
               </div>
             </section>
 
@@ -354,11 +411,9 @@ export function Dashboard() {
               </h3>
               <div className="space-y-4">
                 {sampleWorkshops.map((workshop) => (
-                  <WorkshopCard
-                    key={workshop.id}
-                    {...workshop}
-                    onAction={handleWorkshopAction}
-                  />
+                  <Link key={workshop.id} to={workshopHref(workshop.id)} className="block">
+                    <WorkshopCard {...workshop} onAction={handleWorkshopAction} />
+                  </Link>
                 ))}
               </div>
             </section>
