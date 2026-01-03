@@ -1,0 +1,400 @@
+there will be LMS named "Dudung SmartEdu using glassmorphism style and hover with color palette (or you can suggest the color palette) light mode: #EFECE3, #8FABD4, #4A70A9, #000000 dark mode: #0C2B4E, #1A3D64, #1D546C, #F4F4F4. make sure it is responsive on web desktop, web mobile, and mobile
+
+page structure:
+PAGE 1 — PUBLIC LANDING PAGE
+PAGE 2 — DASHBOARD / HOME PAGE
+PAGE 3 — USER PROFILE (STUDENT) PAGE
+PAGE 4 — MY COURSE PAGE
+PAGE 5 — SEARCH PAGE
+PAGE 6 — COURSE PAGE
+PAGE 7 — WORKSHOP & CERTIFICATION PAGE
+PAGE X — USER PROFILE (TEACHER) PAGE
+
+i'll write down the details. learn this page structure first. there will be teacher's pov, but student's pov is prio now
+
+global interactions:
+All clickable elements have hover states
+Buttons animate 180–220ms
+No sharp edges anywhere
+Auto layout required everywhere
+
+===========================================================================
+PAGE 1 — PUBLIC LANDING PAGE
+===========================================================================
+responsive rules:
+Desktop → 2 columns (Announcements left, Form right)
+Tablet → Form shrinks to 60/40 ratio
+Mobile → Stack vertically: Form on top,  Announcements below
+Navbar converts to hamburger when width < 900px
+
+1. Navbar --> reusable components
+a. di sebelah kiri 
+- logo Dudung SmartEdu
+- judul "Dudung SmartEdu" yang kalo clicked will redirect to landing page
+b. di sebelah kanan
+- contact (if hovered ) >
+# "(logo university) Dudung University web" direct to dudung.ac.id
+# "(logo email) Helpdesk Email" email helpdesk.smartedu@dudung.ac.id (if clicked direct to send email in gmail)
+# "(logo phone) Helpdesk Contact" WhatsApp 08123456789 (if clicked direct to send chat in WA)
+- theme toggle > (light mode icon) / (dark mode icon) 
+
+
+A. Left Side
+2. Information/Announcements (60% width)
+jadi ini tempat buat kumpulan announcements. bentuknya kotak (tapi jangan runcing) buat setiap announcement. isinya ada announcement title, author, publish date n time, preview maksimal 100 kata, trus ada button "More" yang kalo dipencet bakal direct ke page khusus announcement ini. scrollable vertical auto layout.
+the headline “Transform the way you learn — anytime, anywhere.”
+SmartEdu integrates modern learning, progress tracking, and instant interaction in one platform.
+"See more” to Prevent layout overload
+Hover interaction (slight glow + lift)	Encourages engagement
+Each announcement card:
+- Glassmorphic card
+- Title (max 2 lines)
+- Tag chip: NEW / IMPORTANT
+- Author name
+- Publish date + time
+- Preview text (max 100 words)
+- CTA button: “More →” (full text will be displayed on centered popup)
+
+
+B. Right Side
+3. Live Chat (bottom-right and single floating chat icon) --> reusable components
+kalo di klik, bakal muncul area kecil buat si Live Chat ini. isinya 
+- judul "SmartEdu Live Chat"
+- "Name"
+- input box for name section with "Name" placeholder
+- "Role"
+- dropdown: Student / Teacher  
+- NPM / NPWP
+- input box for npm/npwp section with "NPM / NPWP" placeholder. if student choosen, max 8 chars. if teacher choosen, max 12 chars.
+- "WhatsApp Number"
+- input box for number section with "WhatsApp Number" placeholder
+- Message
+- input box for message section with 100 words max
+- CTA send
+all section are required
+
+4. Login Form (40% width)
+a. Header:
+# Title: Welcome to SmartEdu
+# Subtitle: Transform the way you learn — anytime, anywhere.
+b. Sign In
+# "Sign in as" Toggle buttons: Teacher | Student (sifatnya dynamic, if student then student and vice versa)
+# Username* (connect with database)
+# Password* (connect with database)
+# Login button > on success → return to dashboard page.
+# divider
+# "New in here? *Register* here" 
+c. Register (Show/Hide password icon, Inline validation errors, Enter key triggers login, CTA has loading spinner on submit)
+# "Register as" Toggle buttons: Teacher | Student (sifatnya dynamic, if student, then student and vice versa)
+# Fullname* (max 50 string)
+# NPM* (must be 8 digit number) for Student and NPWP (must be 12 digit number) for Teacher
+# Email* (must end with @student.dudung.ac.id for student and @staff.dudung.ac.id for teacher)
+# Username* (no redundant username)
+# Password* (8+ chars)
+# Register button > on success → return to Sign In.
+
+Add smooth dropdown motion (200ms vertical fade)
+Password strength indicator Smart onboarding
+Keyboard “Enter” triggers login	Faster UX
+Loading spinner on CTA	Feedback during authentication
+
+
+===========================================================================
+PAGE 2 — DASHBOARD PAGE
+===========================================================================
+1. Top Navbar
+a. di sebelah kiri 
+- logo Dudung SmartEdu
+- judul "Dudung SmartEdu" yang kalo clicked will redirect to landing page
+b. di sebelah kanan
+- contact (if hovered ) >
+# "Dudung University web
+# "(logo email) Helpdesk Email" email helpdesk.smartedu@dudung.ac.id (if clicked direct to send email in gmail)
+# "(logo phone) Helpdesk Contact" wouldnt direct to any page but can be click
+# "(logo switcher) Theme" if clicked there's switcher theme (dark/light)
+
+2. Live Chat (bentuknya logo aja) di pojok kiri bawah
+kalo di klik, bakal muncul area kecil buat si Live Chat ini. isinya 
+- judul "SmartEdu Live Chat"
+- Name*
+- Role (dropdown: Teacher / Student)
+- NPM (if Student Clicked) and NPWP (if Teacher clicked)*
+- WhatsApp Number*
+- Message
+
+3. bottom navbar 
+- Home > redirect to home page if clicked
+- Search > redirect to Search page if clicked
+- My course > redirect to course page if clicked
+- Profile > redirect to Profile page if clicked
+
+3. Profile 
+- user's profile picture
+- "Hello (user's registered name)" as headline
+- "Let's continue learning" as subheadline
+- Add small tooltip on hover of profile image: “Manage Profile”
+
+A. Left side
+4. Continue Learning 
+- "Continue Learning " as title above the kotak
+- Card: glassmorphism, large, hover-lift
+- Content inside the card:
+# Subject preview collage image
+# Subject Name
+# Lesson x • Lesson Title
+# Progress: Progress bar (based on SmartEdu Colors) & Text: 64% Complete — 8 of 12 Lessons
+If user has no active course → show placeholder card: “No active course yet — start a course from ‘Courses Overview’”
+
+5. Recently Accessed Section
+4 thumbnails scroll/slide. it can be courses/workshop/certification
+
+6. Courses Overview
+- "Courses Overview" as title above the kotak
+- "View All" as action text above the kotak
+- Grid layout: 4 columns × 3 rows = 12 cards max
+- Each card contains:
+# Element 
+# Image preview 
+# Course name 
+# Teacher name 
+# Progress bar 
+# Last accessed date 
+# Action menu (3 dots) — dropdown: Continue Course / View Details / Unenroll |
+If courses < 12 → remaining slots appear as disabled gray placeholders
+
+7. Calendar Section
+- "Calendar" as title above the kotak
+- Expanded glassmorphism widget
+- Shows the title of deadlines/quizzes/exams/submissions inside the date part
+- Hovering a date shows pop-up:
+- Task Name – Course Name – Due Time
+- Add CTA “Sync to Google Calendar” 
+
+B. Right side (or it called as sidebar widget?)
+7. To do 
+- "To do" as title above the kotak
+- vertical list of tasks
+# name of task
+# name of courses
+# deadline of task
+- Task color tag suggestions:
+# Status: Upcoming | Color : Blue
+# Status: Due Today  | Color : Orange
+# Status: Overdue | Color : Red
+Clicking a task → opens course → corresponding assignment page.
+
+8. Workshop & Certification
+- "Workshop & Certification" as title above the kotak
+- content format
+# Banner image (topic) 
+# Title 
+# Organizer / Instructor 
+# Date & Duration |
+# CTA button: Enroll / Register / View Details 
+# Add labels: | FREE | RECOMMENDED | EXCLUSIVE |
+
+===========================================================================
+PAGE 3A — MY COURSE PAGE
+===========================================================================
+1. Top Navbar
+a. di sebelah kiri 
+- logo Dudung SmartEdu
+- judul "Dudung SmartEdu" yang kalo clicked will redirect to landing page
+b. di sebelah kanan
+- contact (if hovered ) >
+# "Dudung University web
+# "(logo email) Helpdesk Email" email helpdesk.smartedu@dudung.ac.id (if clicked direct to send email in gmail)
+# "(logo phone) Helpdesk Contact" wouldnt direct to any page but can be click
+# "(logo switcher) Theme" if clicked there's switcher theme (dark/light)
+
+2. bottom navbar 
+- Home > redirect to home page if clicked
+- Search > redirect to Search page if clicked
+- My course > redirect to course page if clicked
+- Profile > redirect to Profile page if clicked
+
+3. My Courses
+- Grid layout: 3 columns 
+- Each card contains:
+# Image preview 
+# Course name 
+# Teacher name 
+# Progress bar 
+# Last accessed date 
+# Action menu (3 dots) — dropdown: Continue Course / View Details / Unenroll |
+
+4. Workshop
+- Grid layout: 3 columns 
+a. if enrolled, each card contains:
+# Image preview 
+# Worskhop name 
+# Add labels: | FREE | RECOMMENDED | EXCLUSIVE |
+# Organizer / Instructor 
+# Progress bar 
+# Last accessed date 
+# CTA button: Continue Workshop / View Details / Unenroll |
+
+b. if not enroll yet, each card contains:
+# Image preview 
+# Worskhop name 
+# Add labels: | FREE | RECOMMENDED | EXCLUSIVE |
+# Organizer / Instructor 
+# Last accessed date 
+# CTA button: Enroll / View Details 
+
+5. Certification
+same as Workshop, only change workshop into certification
+
+if user click inside the card, it will direct to PAGE 3A — MY COURSE PAGE: DETAIL
+
+===========================================================================
+PAGE 3B — MY COURSE PAGE: DETAIL
+===========================================================================
+1. Top Navbar
+a. di sebelah kiri 
+- logo Dudung SmartEdu
+- judul "Dudung SmartEdu" yang kalo clicked will redirect to landing page
+b. di sebelah kanan
+- contact (if hovered ) >
+# "Dudung University web
+# "(logo email) Helpdesk Email" email helpdesk.smartedu@dudung.ac.id (if clicked direct to send email in gmail)
+# "(logo phone) Helpdesk Contact" wouldnt direct to any page but can be click
+# "(logo switcher) Theme" if clicked there's switcher theme (dark/light)
+
+2. bottom navbar 
+- Home > redirect to home page if clicked
+- Search > redirect to Search page if clicked
+- My course > redirect to course page if clicked
+- Profile > redirect to Profile page if clicked
+
+3. Headline
+- Course/Workshop/Certification Detail + back icon
+- module name
+
+A. Left side (70% width)
+4. Course Player
+a. Video lesson player 
+- Dark video area with centered play button
+- Standard controls (play, progress bar, volume, fullscreen)
+- Current timestamp visible
+b. Lesson detail
+- Lesson title: “Welcome & course structure”
+- Lesson detail
+- Progress badge on the right (e.g. “Progress · 38%”)
+
+5. Navigation Control (below the video:
+- Left button: “← Previous lesson” (outlined)
+- Right button: “Next lesson →” (primary blue button)
+- Helper text: “Use ← and → keys to navigate between lessons.”
+
+B. Right side (30% width)
+6. Course/Workshop/Certification Outline
+- total duration
+
+
+===========================================================================
+PAGE 4 — SEARCH PAGE
+===========================================================================
+1. Top Navbar
+a. di sebelah kiri 
+- logo Dudung SmartEdu
+- judul "Dudung SmartEdu" yang kalo clicked will redirect to landing page
+b. di sebelah kanan
+- contact (if hovered ) >
+# "Dudung University web
+# "(logo email) Helpdesk Email" email helpdesk.smartedu@dudung.ac.id (if clicked direct to send email in gmail)
+# "(logo phone) Helpdesk Contact" wouldnt direct to any page but can be click
+# "(logo switcher) Theme" if clicked there's switcher theme (dark/light)
+
+2. bottom navbar 
+- Home > redirect to home page if clicked
+- Search > redirect to Search page if clicked
+- My course > redirect to course page if clicked
+- Profile > redirect to Profile page if clicked
+
+3. Search Bar
+- Search bar
+- Filter (dropdown): Default (all) / Course / workshop / certificate
+
+4. Search Results
+- Filter (dropdown): Default (all) / Course / workshop / certificate
+- Each card contains:
+# Title
+# Image preview 
+# Tag: Course / workshop / certificate
+# pagination
+
+
+
+===========================================================================
+PAGE 5 — PROFILE PAGE
+===========================================================================
+1. Top Navbar
+a. di sebelah kiri 
+- logo Dudung SmartEdu
+- judul "Dudung SmartEdu" yang kalo clicked will redirect to landing page
+b. di sebelah kanan
+- contact (if hovered ) >
+# "Dudung University web
+# "(logo email) Helpdesk Email" email helpdesk.smartedu@dudung.ac.id (if clicked direct to send email in gmail)
+# "(logo phone) Helpdesk Contact" wouldnt direct to any page but can be click
+# "(logo switcher) Theme" if clicked there's switcher theme (dark/light)
+
+2. bottom navbar 
+- Home > redirect to home page if clicked
+- Search > redirect to Search page if clicked
+- My course > redirect to course page if clicked
+- Profile > redirect to Profile page if clicked
+
+3. Profile Section 
+- user's profile picture
+- "Hello (user's registered name)" as headline
+- "Let's continue learning" as subheadline
+
+4. User Detail
+- "Name"
+- input box for name section with "Name" placeholder and make it gray cause it cant be changed
+- "NPM"
+- input box for name section with "NPM" placeholder and make it gray cause it cant be changed
+- "Adress"
+- input box for name section with "Adress" placeholder 
+- "Mother's Name"
+- input box for name section with "Mother's Name" placeholder 
+- "ID Number"
+- input box for name section with "ID Number" placeholder 
+- "Student Number"
+- input box for name section with "Student Number" placeholder 
+- "Phone Number"
+- input box for name section with "Phone Number" placeholder 
+- "Email (except email@student.dudung.ac.id)"
+- input box for name section with "Email" placeholder 
+- "Formal Photo"
+- input upload button
+all section are required
+- "edit" button
+- "submit" button
+
+
+5. My Workshop & Certificate 
+only finished workshop and certificate tht can be displayed here
+a. Workshop
+- Grid layout: 4 columns × 3 rows = 12 cards max
+- Each card contains:
+# Workshop title
+# Image preview 
+# Workshop name 
+# Teacher name 
+# Completion
+# (button) View recording | Download (icon only) | Share (icon only)
+b. Certificate
+- Grid layout: 4 columns × 3 rows = 12 cards max
+- Each card contains:
+# Certificate title
+# Image preview 
+# Issued date
+# Certificate ID 
+# Instructor / Organization
+# (button) View certificate (modal) | Download (icon only) | Share (icon only)
+
+6. Logout
+- red button
